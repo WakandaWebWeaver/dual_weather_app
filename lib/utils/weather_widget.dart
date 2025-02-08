@@ -41,6 +41,7 @@ class WeatherWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Icon(Icons.location_pin, color: Colors.white,),
           Text(
             weather?.cityName ?? 'Loading city...',
             style: const TextStyle(
@@ -51,15 +52,15 @@ class WeatherWidget extends StatelessWidget {
           ),
           Lottie.asset(getWeatherAnimation(weather?.mainCondition, weather?.icon)),
           Text(
-            '${weather?.temperature.round()}\u00B0C / ${((weather?.temperature ?? 0) * 9 / 5 + 32).round()}\u00B0F',
+            '${weather?.temperature.round()}°C / ${((weather?.temperature ?? 0) * 9 / 5 + 32).round()}°F',
             style: const TextStyle(
               color: Color.fromARGB(182, 255, 255, 255),
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
-          )
+          ),
         ],
       ),
     );
   }
-} 
+}

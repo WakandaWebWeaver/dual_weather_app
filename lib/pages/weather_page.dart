@@ -11,7 +11,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  final _weatherService = WeatherService('8bcf535c6a9af8d675ac579b68f93059');
+  final _weatherService = WeatherService('');
   Weather? _weather;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();

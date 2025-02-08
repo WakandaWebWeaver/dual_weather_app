@@ -2,6 +2,7 @@ import 'package:dual_weather_app/models/weather_model.dart';
 import 'package:dual_weather_app/utils/weather_widget.dart';
 import 'package:dual_weather_app/services/weather_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
@@ -11,7 +12,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  final _weatherService = WeatherService('');
+  final _weatherService = WeatherService(dotenv.env['WEATHER_API_KEY'] ?? '');
   Weather? _weather;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();

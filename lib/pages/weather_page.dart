@@ -20,24 +20,32 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   void initState() {
     super.initState();
-    _fetchWeather(); // Fetch default weather on load
+    _fetchWeather();
   }
 
   Future<void> _fetchWeather([String? cityName]) async {
     cityName ??= await _weatherService.getCurrentCity();
-    print('Fetching weather for: $cityName');
-
     try {
       final weather = await _weatherService.getWeather(cityName);
       setState(() {
         _weather = weather;
       });
     } catch (e) {
-      print('Error fetching weather: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error fetching weather for $cityName'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 
   void _handleSearch(String cityName) {
+    if (cityName.trim().isEmpty) return;
+
     _fetchWeather(cityName);
     setState(() {
       _isSearching = false;
@@ -48,33 +56,31 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter city name...',
-                  hintStyle: TextStyle(color: Colors.white54),
-                  border: InputBorder.none,
-                ),
-                onSubmitted: _handleSearch,
-                autofocus: true,
-              )
-            : const SizedBox(), // Empty title, no text displayed
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _isSearching
+              ? SearchBar(
+            controller: _searchController,
+            onSubmitted: _handleSearch,
+          )
+              : null,
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            color: Colors.white,
-            onPressed: () {
-              setState(() {
-                _isSearching = !_isSearching;
-                if (!_isSearching) _searchController.clear();
-              });
-            },
-          ),
+          if (!_isSearching)
+            IconButton(
+              icon: const Icon(Icons.search),
+              color: Colors.white,
+              onPressed: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              },
+            ),
         ],
       ),
       body: WeatherWidget(weather: _weather),
